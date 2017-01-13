@@ -55,53 +55,25 @@ public class ViewfinderView extends View {
     // stopped.
     protected Rect framingRect;
 
-    /**
-     * 刷新界面的时间
-     */
     private static final long ANIMATION_DELAY = 10L;
     private static final int OPAQUE = 0xFF;
 
-    /**
-     * 四个绿色边角对应的长度
-     */
     private int ScreenRate;
 
-    /**
-     * 四个绿色边角对应的宽度
-     */
     private static final int CORNER_WIDTH = 6;
-    /**
-     * 扫描框中的中间线的宽度
-     */
+
     private static final int MIDDLE_LINE_WIDTH = 4;
 
-    /**
-     * 扫描框中的中间线的与扫描框左右的间隙
-     */
     private static final int MIDDLE_LINE_PADDING = 5;
 
-    /**
-     * 中间那条线每次刷新移动的距离
-     */
     private static final int SPEEN_DISTANCE = 5;
 
-    /**
-     * 手机的屏幕密度
-     */
     private static float density;
-    /**
-     * 画笔对象的引用
-     */
+
     private Paint paint;
 
-    /**
-     * 中间滑动线的最顶端位置
-     */
     private int slideTop;
 
-    /**
-     * 中间滑动线的最底端位置
-     */
     private int slideBottom;
 
     private Bitmap resultBitmap;
@@ -120,7 +92,6 @@ public class ViewfinderView extends View {
         super(context, attrs);
 
         density = context.getResources().getDisplayMetrics().density;
-        //将像素转换成dp
         ScreenRate = (int) (20 * density);
 
         paint = new Paint();
@@ -179,7 +150,6 @@ public class ViewfinderView extends View {
 
         Rect frame = framingRect;
 
-        //初始化中间线滑动的最上边和最下边
         if (!isFirst) {
             isFirst = true;
             slideTop = frame.top;
@@ -191,8 +161,6 @@ public class ViewfinderView extends View {
 
         paint.setColor(resultBitmap != null ? resultColor : maskColor);
 
-        //画出扫描框外面的阴影部分，共四个部分，扫描框的上面到屏幕上面，扫描框的下面到屏幕下面
-        //扫描框的左边面到屏幕左边，扫描框的右边到屏幕右边
         canvas.drawRect(0, 0, width, frame.top, paint);
         canvas.drawRect(0, frame.top, frame.left, frame.bottom, paint);
         canvas.drawRect(frame.right, frame.top, width, frame.bottom,
@@ -206,7 +174,6 @@ public class ViewfinderView extends View {
             canvas.drawBitmap(resultBitmap, frame.left, frame.top, paint);
         } else {
 
-            //画扫描框边上的角，总共8个部分
             paint.setColor(resultPointColor);
             canvas.drawRect(frame.left, frame.top, frame.left + ScreenRate,
                     frame.top + CORNER_WIDTH, paint);
@@ -226,7 +193,6 @@ public class ViewfinderView extends View {
                     frame.right, frame.bottom, paint);
 
 
-            //绘制中间的线,每次刷新界面，中间的线往下移动SPEEN_DISTANCE
             slideTop += SPEEN_DISTANCE;
             if (slideTop >= frame.bottom) {
                 slideTop = frame.top;
@@ -257,7 +223,6 @@ public class ViewfinderView extends View {
             }
         }
 
-        //只刷新扫描框的内容，其他地方不刷新
         postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top,
                 frame.right, frame.bottom);
     }
